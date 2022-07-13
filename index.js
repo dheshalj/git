@@ -1,7 +1,7 @@
 const { resolve } = require('path') 
 const gitjs = require('./gitdheshal')
 
-const git = new require('node-git-server')(resolve(__dirname, 'repos'), {
+const git = new (require('node-git-server'))(resolve(__dirname, 'repos'), {
     autoCreate: true,
     authenticate: ({ type, repo, user }, next) => {
         user((username, password) => {
