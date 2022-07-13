@@ -1,0 +1,17 @@
+{
+  "name": "calgit",
+  "version": "1.0.0",
+  "description": "Caldera Git Server",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "CalGit"
+  ],
+  "author": "Dheshal Jayamanne",
+  "license": "MIT",
+  "dependencies": {
+    "node-git-server": "^0.6.1"
+  }
+}
