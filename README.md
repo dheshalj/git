@@ -1,2 +1,2 @@
-# CalGit
-Caldera Git Server
+# Git
+Dheshal Git Server
