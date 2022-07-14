@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const gitdheshal = require('./gitdheshal.json')
+const cred = require('./users.json')
 
 function isGit(repoDir, callback) {
     fs.readdir(repoDir, (error, results) => {
@@ -19,9 +19,8 @@ function combiner(username, repoNames) {
     return json
 }
 
-const folders = fs.readdirSync(path.resolve(__dirname, 'repos'), { withFileTypes: true }).filter(dirent => dirent.isDirectory()).map(dirent => dirent.name)
-
 function getRepos(callback) {
+    const folders = fs.readdirSync(path.resolve(__dirname, 'repos'), { withFileTypes: true }).filter(dirent => dirent.isDirectory()).map(dirent => dirent.name)
     let allRepos = []
     for (let i = 0; i < folders.length; i++) {
         if (folders[i].split('.')[folders[i].split('.').length - 1] != 'git') {
@@ -41,8 +40,8 @@ function getRepos(callback) {
 }
 
 function auth(username, password) {
-    for (let i = 0; i < gitdheshal.accounts.length; i++) {        
-        if (gitdheshal.accounts[i].username == username && gitdheshal.accounts[i].password == password) {
+    for (let i = 0; i < cred.length; i++) {        
+        if (cred[i].username == username && cred[i].password == password) {
             return true
         }
     }

@@ -1,11 +1,11 @@
 const { resolve } = require('path') 
-const gitjs = require('./gitdheshal')
+const utils = require('./utils')
 
-const git = new (require('node-git-server'))(resolve(__dirname, 'repos'), {
+const git = new (require('node-git-server'))(resolve(__dirname, 'bucket'), {
     autoCreate: true,
     authenticate: ({ type, repo, user }, next) => {
         user((username, password) => {
-            if (gitjs.auth(username, password)) {
+            if (utils.auth(username, password)) {
                 next()
             } else {
                 next('Wrong Password')
@@ -32,7 +32,7 @@ git.on('fetch', (fetch) => {
 //     console.log(cb)
 // })
 
-// gitjs.getRepos((list) => {
+// utils.getRepos((list) => {
 //     console.log(list)
 // })
 
