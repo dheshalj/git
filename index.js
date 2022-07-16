@@ -4,8 +4,8 @@ const utils = require('./utils')
 const git = new (require('node-git-server'))(resolve(__dirname, 'bucket'), {
     autoCreate: true,
     authenticate: ({ type, repo, user }, next) => {
-        user((username, password) => {
-            if (utils.auth(username, password)) {
+        user(async (username, password) => {
+            if (await utils.auth(username, password)) {
                 next()
             } else {
                 next('Wrong Password')

@@ -135,14 +135,16 @@ function getUsers() {
 // }
 // deleteUser("dheshalj")
 
-function auth(username, password) {
-    const cred = getUsers()
-    for (let i = 0; i < cred.length; i++) {        
-        if (cred[i].username.S == username && cred[i].password.S == password) {
-            return true
-        }
+async function auth(username, password) {
+  return await DynamoDB.scan({ TableName: "GitUserData" }).promise().then((_data) => {
+    const data = _data.Items
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].username.S == username && data[i].password.S == password) {
+        return true;
+      }
     }
-    return false
+    return false;
+  })
 }
 
 module.exports = {
