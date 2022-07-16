@@ -1,6 +1,10 @@
 const fs = require('fs')
 const path = require('path')
-const cred = require('./users.json')
+const AWS = require("aws-sdk");
+AWS.config.update({
+  region: "ap-southeast-1",
+});
+const DynamoDB = new AWS.DynamoDB();
 
 function isGit(repoDir, callback) {
     fs.readdir(repoDir, (error, results) => {
@@ -39,9 +43,107 @@ function getRepos(callback) {
     }
 }
 
+// -- AWS.DynamoDB -- //
+function addUser(username, password) {
+    const params = {
+      TableName: "GitUserData",
+      Item: {
+        username: { S: username },
+        password: { S: password },
+      },
+    };
+  
+    DynamoDB.putItem(params, function(err) {
+      if (err) {
+        console.error("Unable to add user details", err);
+      } else {
+        console.log(`Added ${username} : ${password}`);
+      }
+    });
+}
+
+// addUser("dheshalj", "passwordHere")
+
+function getUsers() {
+    const params = {
+      TableName: "GitUserData",
+    };
+  
+    DynamoDB.scan(params, function(err, data) {
+      if (err) {
+        console.error("Unable to find users", err);
+      } else {
+        console.log(`Found ${data.Count} users`);
+        console.log(data.Items);
+      }
+    });
+}
+
+// getUsers() // [ { password: { S: 'passwordHere' }, username: { S: 'dheshalj' } } ]
+
+function getUser(username) {
+    const params = {
+      TableName: "GitUserData",
+      Key: {
+        username: { S: username },
+      },
+    };
+  
+    DynamoDB.getItem(params, function(err, data) {
+      if (err) {
+        console.error("Unable to find user", err);
+      } else {
+        console.log("Found user", data.Item);
+      }
+    });
+}
+
+// getUser("dheshalj") // Found user { password: { S: 'passwordHere' }, username: { S: 'dheshalj' } }
+
+function updateUserPassword(username, password) {
+    const params = {
+      TableName: "GitUserData",
+      Item: {
+        username: { S: username },
+        password: { S: password },
+      },
+      ReturnConsumedCapacity: "TOTAL",
+    };
+  
+    DynamoDB.putItem(params, function(err) {
+      if (err) {
+        console.error("Unable to find user", err);
+      } else {
+        console.log(`Updated ${username} with ${password}%`);
+      }
+    });
+}
+
+// updateUserPassword("dheshalj", "newPasswordHere")
+
+function deleteUser(username) {
+    const params = {
+      TableName: "GitUserData",
+      Key: {
+        username: { S: username },
+      },
+    };
+  
+    DynamoDB.deleteItem(params, function(err) {
+      if (err) {
+        console.error("Unable to find user", err);
+      } else {
+        console.log(`Deleted ${username}`);
+      }
+    });
+}
+
+// deleteUser("dheshalj")
+
 function auth(username, password) {
+    const cred = getUsers()
     for (let i = 0; i < cred.length; i++) {        
-        if (cred[i].username == username && cred[i].password == password) {
+        if (cred[i].username.S == username && cred[i].password.S == password) {
             return true
         }
     }
