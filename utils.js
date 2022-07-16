@@ -2,6 +2,8 @@ const fs = require('fs')
 const path = require('path')
 const AWS = require("aws-sdk");
 AWS.config.update({
+  accessKeyId: "AKIAWYTFSSBENRMFWKEZ",
+  secretAccessKey: "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",
   region: "ap-southeast-1",
 });
 const DynamoDB = new AWS.DynamoDB();
